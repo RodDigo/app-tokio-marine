@@ -1,0 +1,7 @@
+version: 0.0.0
+
+server:
+  port: 9090 
+spring:
+  application:
+    name: tokio
