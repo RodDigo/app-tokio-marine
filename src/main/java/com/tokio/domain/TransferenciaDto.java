@@ -8,9 +8,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Entity
-public class Transferencia extends AbstractEntity<Integer> {
+public class TransferenciaDto  {
 	
+	private Integer id;
 	private Double valor;
 	private Double taxa;
 	private Double taxaFixa;
@@ -20,7 +20,6 @@ public class Transferencia extends AbstractEntity<Integer> {
 	private Date dtAgendamento;
 	private int idContaOrigem;
 	private int idContaDestino;
-	private int efetuado;
 	
 
 }

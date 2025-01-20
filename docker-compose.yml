@@ -1,0 +1,52 @@
+#version: "3.8"
+
+services:
+#-----------------------------------MYSQL-----------------------------------	  
+  
+##  mysqldb:
+##    image: mysql:latest
+##    restart: always
+##    environment:
+##      MYSQL_USER: $MYSQLDB_USER
+##      MYSQL_PASSWORD: $MYSQLDB_ROOT_PASSWORD
+##      MYSQL_DATABASE: $MYSQLDB_DATABASE
+##      MYSQL_RANDOM_ROOT_PASSWORD: true
+##    networks:
+##      - mysql-demo
+##    ports:
+##      - "3306:3306"
+##    volumes:
+##      - /path/on/host:/var/lib/mysql
+##
+##-----------------------------------docker-compose.yml-----------------------------------	  
+#  
+  docker-compose.yml:
+ #   depends_on:
+ #      - mysqldb
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: meu-docker-registry/docker-compose.yml:0.0.0
+    working_dir: /usr/src/app-tokio
+    container_name: docker-compose.yml
+    restart: on-failure
+    env_file: ./.env
+    ports:
+      - $SPRING_LOCAL_PORT:$SPRING_DOCKER_PORT
+    environment:
+#      - SPRING_DATASOURCE_URL=jdbc:mysql://#############:$MYSQLDB_DOCKER_PORT/$MYSQLDB_DATABASE?allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_URL=jdbc:mysql://mysqldb:$MYSQLDB_DOCKER_PORT/$MYSQLDB_DATABASE?allowPublicKeyRetrieval=true&useSSL=false
+      - SPRING_DATASOURCE_USERNAME=$MYSQLDB_USER
+      - SPRING_DATASOURCE_PASSWORD=$MYSQLDB_ROOT_PASSWORD
+    volumes:
+      - .m2:/root/.m2
+    networks:
+      - mysql-demo  
+    stdin_open: true
+    tty: true	  
+
+volumes:
+  mysqldb:
+
+networks:
+  mysql-demo:

@@ -1,38 +1,54 @@
 package com.tokio.service;
 
+import java.util.Date;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.stereotype.Service;
+import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.stereotype.Component;
 
 import com.tokio.domain.Conta;
 import com.tokio.domain.Transferencia;
 
 import lombok.RequiredArgsConstructor;
 
-@Service
+@Component
 @RequiredArgsConstructor
 public class ScheduleService {
-	
+
 	@Autowired
 	private final ContaService contaService;
-	
+
 	@Autowired
 	private final TransferenciaService tranferenciaService;
-	
-	public void efetuaTransferencia(Integer idContaOigem, Integer idContaDestino) {
-		
-		Conta origem = contaService.findById(idContaOigem).get();
-		Conta destino =  contaService.findById(idContaDestino).get();
-		
-		Transferencia tran = new Transferencia();
-		
-		Double subtraiOrigem =  origem.getValor() - tran.getTotal();
-		origem.setValor(subtraiOrigem);
-		contaService.update(origem);
 
-		Double sumDestino =  origem.getValor() + tran.getTotal();
-		destino.setValor(sumDestino);
-		contaService.update(destino);
-		
+	private static final String CRON = "10,23 * * *";
+
+	@Scheduled(cron = CRON)
+	public void efetuaTransferencia() {
+
+		List<Transferencia> transferencias = tranferenciaService.findByEfetuado(0);
+
+		transferencias.forEach(t -> {
+
+			if (t.getDtTransferencia().compareTo(new Date()) == 0
+					|| t.getDtTransferencia().compareTo(new Date()) == -1) {
+				Conta origem = contaService.findById(t.getIdContaOrigem()).get();
+				Conta destino = contaService.findById(t.getIdContaDestino()).get();
+
+				Double subtraiOrigem = origem.getValor() - t.getTotal();
+				origem.setValor(subtraiOrigem);
+				contaService.update(origem);
+
+				Double sumDestino = destino.getValor() + t.getTotal();
+				destino.setValor(sumDestino);
+				contaService.update(destino);
+
+				t.setEfetuado(1);
+				tranferenciaService.update(t);
+			}
+
+		});
 	}
 
 }

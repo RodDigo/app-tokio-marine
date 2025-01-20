@@ -10,7 +10,6 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.tokio.domain.Conta;
 import com.tokio.domain.Transferencia;
 import com.tokio.repository.TransferenciaRepository;
 
@@ -19,15 +18,23 @@ public class TransferenciaService {
 
 	@Autowired
 	private TransferenciaRepository repository;
-
+	
 	public List<Transferencia> findAll() {
 		return repository.findAll();
+	}
+	
+	public List<Transferencia> findByEfetuado(int efetuado) {
+		return repository.findByEfetuado(efetuado);
 	}
 	
 	public Optional<Transferencia> findById(Integer id) {
 		return repository.findById(id);
 	}
 
+	public void update(Transferencia transferencia) {
+		repository.save(transferencia);	
+	}
+	
 	public String create(Transferencia transferencia) {
 		Long dias = this.validaTaxa(transferencia.getDtTransferencia());
 		Double d = calculoTaxacao(dias, transferencia);
