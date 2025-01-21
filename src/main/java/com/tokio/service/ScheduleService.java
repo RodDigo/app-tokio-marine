@@ -22,7 +22,7 @@ public class ScheduleService {
 	@Autowired
 	private final TransferenciaService tranferenciaService;
 
-	private static final String CRON = "10,23 * * *";
+	private static final String CRON = "10,23 * * * * *";
 
 	@Scheduled(cron = CRON)
 	public void efetuaTransferencia() {
