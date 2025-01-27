@@ -26,7 +26,7 @@ services:
     build:
       context: ./
       dockerfile: Dockerfile
-    image: meu-docker-registry/docker-compose.yml:0.0.0
+    image: rodrigo1983developer/app-tokio:0.0.0
     working_dir: /usr/src/app-tokio
     container_name: docker-compose.yml
     restart: on-failure
